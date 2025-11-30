@@ -1,0 +1,184 @@
+﻿@page
+@model MentalWellnessSystem.Areas.Identity.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<section class="register-page">
+    <div class="container-fluid px-0">
+        <div class="row g-0 min-vh-100">
+            <!-- Left blue panel -->
+            <div class="col-lg-5 d-none d-lg-flex align-items-center justify-content-center register-left">
+                <div class="text-center text-white px-4">
+                    <h1 class="display-5 fw-bold mb-3">MENTALWELLNESS</h1>
+                    <p class="lead mb-0">
+                        Create your account to start your wellness journey.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right form panel -->
+            <div class="col-lg-7 d-flex align-items-center justify-content-center register-right-wrapper">
+                <div class="register-right bg-white shadow-sm rounded-4 w-100" style="max-width: 520px;">
+                    <h2 class="fw-bold mb-2 text-center">Create Account</h2>
+                    <p class="text-muted text-center mb-4">
+                        Sign up to book sessions or provide care.
+                    </p>
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.FullName" class="form-label"></label>
+                            <input asp-for="Input.FullName" class="form-control form-control-lg" />
+                            <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Email" class="form-label"></label>
+                            <input asp-for="Input.Email" class="form-control form-control-lg" autocomplete="email" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Phone" class="form-label"></label>
+                            <input asp-for="Input.Phone" class="form-control form-control-lg" autocomplete="tel" />
+                            <span asp-validation-for="Input.Phone" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Password" class="form-label"></label>
+                            <input asp-for="Input.Password" class="form-control form-control-lg" autocomplete="new-password" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.ConfirmPassword" class="form-label"></label>
+                            <input asp-for="Input.ConfirmPassword" class="form-control form-control-lg" autocomplete="new-password" />
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Role" class="form-label"></label>
+                            <select asp-for="Input.Role" class="form-select form-select-lg" id="roleSelect">
+                                <option value="">Select role</option>
+                                <option value="Patient">Patient</option>
+                                <option value="Doctor">Doctor</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                            <span asp-validation-for="Input.Role" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3" id="therapyGroup">
+                            <label asp-for="Input.TherapyType" class="form-label">Therapy Type / Specialization</label>
+                            <select asp-for="Input.TherapyType" class="form-select form-select-lg" id="therapySelect">
+                                <option value="">Select an option</option>
+                            </select>
+                            <span asp-validation-for="Input.TherapyType" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3" id="patientFields" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label asp-for="Input.Age" class="form-label"></label>
+                                    <input asp-for="Input.Age" class="form-control form-control-lg" type="number" min="1" max="120" />
+                                    <span asp-validation-for="Input.Age" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Input.Gender" class="form-label"></label>
+                                    <select asp-for="Input.Gender" class="form-select form-select-lg">
+                                        <option value="">Select</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                        <option value="Prefer not to say">Prefer not to say</option>
+                                    </select>
+                                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                            Create Account
+                        </button>
+
+                        <p class="text-center text-muted mb-0">
+                            Already have an account?
+                            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Back to Login</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const roleSelect = document.getElementById('roleSelect');
+            const therapySelect = document.getElementById('therapySelect');
+            const therapyGroup = document.getElementById('therapyGroup');
+
+            const patientOptions = [
+                { value: 'Individual Therapy', text: 'Individual Therapy' },
+                { value: 'Teenage Therapy', text: 'Teenage Therapy' },
+                { value: 'Couples Therapy', text: 'Couples Therapy' }
+            ];
+
+            const doctorOptions = [
+                { value: 'Individual Therapist', text: 'Individual Therapist' },
+                { value: 'Teenage Therapist', text: 'Teenage Therapist' },
+                { value: 'Couples Therapist', text: 'Couples Therapist' }
+            ];
+
+            function setOptions(options) {
+                therapySelect.innerHTML = '';
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.textContent = 'Select an option';
+                therapySelect.appendChild(placeholder);
+
+                options.forEach(o => {
+                    const opt = document.createElement('option');
+                    opt.value = o.value;
+                    opt.textContent = o.text;
+                    therapySelect.appendChild(opt);
+                });
+            }
+
+            function updateTherapy() {
+                const role = roleSelect.value;
+                const patientFields = document.getElementById('patientFields');
+                
+                if (role === 'Patient') {
+                    therapyGroup.style.display = 'block';
+                    if (patientFields) patientFields.style.display = 'block';
+                    setOptions(patientOptions);
+                } else if (role === 'Doctor') {
+                    therapyGroup.style.display = 'block';
+                    if (patientFields) patientFields.style.display = 'none';
+                    setOptions(doctorOptions);
+                } else {
+                    therapyGroup.style.display = 'none';
+                    if (patientFields) patientFields.style.display = 'none';
+                    therapySelect.value = '';
+                }
+            }
+
+            if (roleSelect) {
+                roleSelect.addEventListener('change', updateTherapy);
+                updateTherapy();
+            }
+        })();
+    </script>
+}
