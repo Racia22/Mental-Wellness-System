@@ -1,10 +1,13 @@
 @page
 @model MentalWellnessSystem.Pages.Doctor.DashboardModel
 @{
+    // Sets the title of the page for the browser tab and layout
     ViewData["Title"] = "Doctor Dashboard";
 }
 
 <div class="container-fluid py-4">
+
+    @* Display success message if available in TempData (e.g., appointment updated) *@
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -12,18 +15,26 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
+
     <div class="row mb-4">
         <div class="col-12">
+            @* Displays the logged-in doctor's name using the model's CurrentUser property *@
             <h1 class="h3 mb-0">Welcome, Dr. @Model.CurrentUser?.FullName!</h1>
+
+            @* Shows doctor's specialty or defaults to "General" if null *@
             <p class="text-muted">Specialty: @(Model.CurrentUser?.Specialty ?? "General")</p>
         </div>
     </div>
 
     <!-- Filters -->
     <div class="row mb-3">
+
+        @* Filter by time range: Day, Week, Month, Year *@
         <div class="col-md-6 mb-2">
             <form method="get" id="filterForm">
                 <label class="form-label">Filter by Time Period</label>
+
+                @* Whenever user selects an option, form automatically submits *@
                 <select asp-for="Filter" class="form-select" onchange="document.getElementById('filterForm').submit()">
                     <option value="Day">Day</option>
                     <option value="Week">Week</option>
@@ -32,10 +43,16 @@
                 </select>
             </form>
         </div>
+
+        @* Filter appointments by status (Scheduled, Ongoing, Completed, Cancelled) *@
         <div class="col-md-6 mb-2">
             <form method="get" id="statusFilterForm">
+                @* Keeps the main filter value when status is changed *@
                 <input type="hidden" asp-for="Filter" />
+
                 <label class="form-label">Filter & Update Appointment Status</label>
+
+                @* Auto-submits on change *@
                 <select asp-for="StatusFilter" class="form-select" onchange="document.getElementById('statusFilterForm').submit()">
                     <option value="">All Statuses</option>
                     <option value="Scheduled">Scheduled</option>
@@ -54,7 +71,9 @@
                 <div class="card-header bg-white">
                     <h5 class="mb-0">Appointments</h5>
                 </div>
+
                 <div class="card-body">
+                    @* If there are appointments, display them in a table *@
                     @if (Model.Appointments.Any())
                     {
                         <div class="table-responsive">
@@ -69,18 +88,34 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
+                                    @* Loop through all appointments and display details *@
                                     @foreach (var appointment in Model.Appointments)
                                     {
                                         <tr>
+                                            @* Format date to readable format e.g., January 20, 2025 *@
                                             <td>@appointment.AppointmentDate.ToString("MMMM dd, yyyy")</td>
+
+                                            @* Format time to 12-hour clock with AM/PM *@
                                             <td>@appointment.AppointmentTime.ToString("hh:mm tt")</td>
+
                                             <td>@appointment.Patient.FullName</td>
+
+                                            @* If AppointmentType is null, default to "General Consultation" *@
                                             <td>@(appointment.AppointmentType ?? "General Consultation")</td>
+
                                             <td>
+                                                @* Form to update appointment status dynamically on change *@
                                                 <form method="post" asp-page-handler="UpdateStatus" class="d-inline">
                                                     <input type="hidden" name="appointmentId" value="@appointment.AppointmentId" />
-                                                    <select name="status" class="form-select form-select-sm d-inline-block" style="width: auto;" onchange="this.form.submit()">
+
+                                                    @* Dropdown to update appointment status *@
+                                                    <select name="status" 
+                                                            class="form-select form-select-sm d-inline-block" 
+                                                            style="width: auto;" 
+                                                            onchange="this.form.submit()">
+
                                                         <option value="Scheduled" selected="@(appointment.Status == "Scheduled")">Scheduled</option>
                                                         <option value="Ongoing" selected="@(appointment.Status == "Ongoing")">Ongoing</option>
                                                         <option value="Completed" selected="@(appointment.Status == "Completed")">Completed</option>
@@ -88,8 +123,12 @@
                                                     </select>
                                                 </form>
                                             </td>
+
+                                            @* Navigate to ManageAppointment page to view full appointment details *@
                                             <td>
-                                                <a asp-page="/Doctor/ManageAppointment" asp-route-id="@appointment.AppointmentId" class="btn btn-sm btn-outline-primary">
+                                                <a asp-page="/Doctor/ManageAppointment" 
+                                                   asp-route-id="@appointment.AppointmentId" 
+                                                   class="btn btn-sm btn-outline-primary">
                                                     Manage
                                                 </a>
                                             </td>
@@ -101,6 +140,7 @@
                     }
                     else
                     {
+                        @* Display message when no appointments found *@
                         <p class="text-muted text-center py-4">No appointments found for the selected period.</p>
                     }
                 </div>
@@ -115,7 +155,9 @@
                 <div class="card-header bg-white">
                     <h5 class="mb-0">Patient Feedback</h5>
                 </div>
+
                 <div class="card-body">
+                    @* Display feedback list if available *@
                     @if (Model.PatientFeedbacks.Any())
                     {
                         <div class="table-responsive">
@@ -129,19 +171,28 @@
                                         <th>Comments</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
+                                    @* Loop through feedback records *@
                                     @foreach (var feedback in Model.PatientFeedbacks)
                                     {
                                         <tr>
                                             <td>@feedback.SubmittedAt.ToString("MMM dd, yyyy")</td>
+
+                                            @* If feedback is anonymous, show 'Anonymous', else show patient name *@
                                             <td>@(feedback.IsAnonymous ? "Anonymous" : (feedback.Patient?.FullName ?? "Unknown"))</td>
+
+                                            @* Displays related appointment date or N/A if missing *@
                                             <td>@(feedback.Appointment?.AppointmentDate.ToString("MMM dd, yyyy") ?? "N/A")</td>
+
                                             <td>
+                                                @* Display star icons equal to the rating value *@
                                                 @for (int i = 0; i < feedback.Rating; i++)
                                                 {
                                                     <i class="bi bi-star-fill text-warning"></i>
                                                 }
                                             </td>
+
                                             <td>@(feedback.Comments ?? "No comments")</td>
                                         </tr>
                                     }
@@ -151,6 +202,7 @@
                     }
                     else
                     {
+                        @* Message when there is no feedback yet *@
                         <p class="text-muted text-center py-4">No patient feedback yet.</p>
                     }
                 </div>
@@ -158,4 +210,3 @@
         </div>
     </div>
 </div>
-
