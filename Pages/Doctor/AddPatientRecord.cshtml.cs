@@ -8,9 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MentalWellnessSystem.Pages.Doctor
 {
-    /// <summary>
-    /// Add Patient Record page - allows doctors to add session notes, diagnosis, and follow-up requests
-    /// </summary>
+    
     [Authorize(Policy = "RequireDoctorRole")]
     public class AddPatientRecordModel : PageModel
     {
