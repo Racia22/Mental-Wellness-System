@@ -7,9 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MentalWellnessSystem.Pages.Admin
 {
-    /// <summary>
-    /// Approve Doctors page - allows admin to approve pending doctor registrations
-    /// </summary>
+
     [Authorize(Policy = "RequireAdminRole")]
     public class ApproveDoctorsModel : PageModel
     {
