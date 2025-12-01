@@ -1132,6 +1132,7 @@ For issues, questions, or contributions:
 <div align="center">
 
 **Built with ❤️ for Mental Wellness**
+**Thanks to all Team Members**
 
 *Empowering mental health care through technology*
 
