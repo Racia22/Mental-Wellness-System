@@ -1,0 +1,106 @@
+@page
+@model MentalWellnessSystem.Pages.Patient.ViewAppointmentModel
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+@if (Model.Appointment == null)
+{
+    <div class="container py-4">
+        <div class="alert alert-danger">Appointment not found.</div>
+    </div>
+    return;
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Appointment Details</h2>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Appointment ID</dt>
+                        <dd class="col-sm-8">#@Model.Appointment.AppointmentId</dd>
+
+                        <dt class="col-sm-4">Date</dt>
+                        <dd class="col-sm-8">@Model.Appointment.AppointmentDate.ToString("MMMM dd, yyyy")</dd>
+
+                        <dt class="col-sm-4">Time</dt>
+                        <dd class="col-sm-8">@Model.Appointment.AppointmentTime.ToString("hh:mm tt")</dd>
+
+                        <dt class="col-sm-4">Doctor</dt>
+                        <dd class="col-sm-8">@Model.Appointment.Doctor.FullName</dd>
+
+                        <dt class="col-sm-4">Specialty</dt>
+                        <dd class="col-sm-8">@(Model.Appointment.Doctor.Specialty ?? "General")</dd>
+
+                        <dt class="col-sm-4">Appointment Type</dt>
+                        <dd class="col-sm-8">@(Model.Appointment.AppointmentType ?? "General Consultation")</dd>
+
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-@(Model.Appointment.Status == "Scheduled" ? "primary" : Model.Appointment.Status == "Ongoing" ? "warning" : Model.Appointment.Status == "Completed" ? "success" : "danger")">
+                                @Model.Appointment.Status
+                            </span>
+                        </dd>
+
+                        @if (!string.IsNullOrEmpty(Model.Appointment.Notes))
+                        {
+                            <dt class="col-sm-4">Notes</dt>
+                            <dd class="col-sm-8">@Model.Appointment.Notes</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-page-handler="DownloadPdf" asp-route-id="@Model.Appointment.AppointmentId" class="btn btn-primary">
+                            <i class="bi bi-file-pdf"></i> Download Appointment Details
+                        </a>
+                        <small class="text-muted d-block mt-2">Download as HTML (can be printed to PDF)</small>
+                        @if (Model.Appointment.Status != "Cancelled" && Model.Appointment.Status != "Completed")
+                        {
+                            <form method="post" asp-page-handler="Cancel" asp-route-id="@Model.Appointment.AppointmentId" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    Cancel Appointment
+                                </button>
+                            </form>
+                        }
+                        <a asp-page="/Patient/AppointmentHistory" class="btn btn-outline-secondary">
+                            Back to History
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

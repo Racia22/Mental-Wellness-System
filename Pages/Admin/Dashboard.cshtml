@@ -1,0 +1,108 @@
+@page
+@model MentalWellnessSystem.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0">Admin Dashboard</h1>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">Total Users</h5>
+                    <h2 class="mb-0">@Model.Stats.TotalUsers</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">Patients</h5>
+                    <h2 class="mb-0">@Model.Stats.TotalPatients</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">Doctors</h5>
+                    <h2 class="mb-0">@Model.Stats.TotalDoctors</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">Pending Approvals</h5>
+                    <h2 class="mb-0 text-warning">@Model.Stats.PendingDoctorApprovals</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">Total Appointments</h5>
+                    <h2 class="mb-0">@Model.Stats.TotalAppointments</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">Upcoming</h5>
+                    <h2 class="mb-0">@Model.Stats.UpcomingAppointments</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">Completed</h5>
+                    <h2 class="mb-0">@Model.Stats.CompletedAppointments</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">Active Treatment Plans</h5>
+                    <h2 class="mb-0">@Model.Stats.ActiveTreatmentPlans</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2 d-md-flex">
+                        <a asp-page="/Admin/ApproveDoctors" class="btn btn-primary">
+                            <i class="bi bi-person-check"></i> Approve Doctors (@Model.Stats.PendingDoctorApprovals pending)
+                        </a>
+                        <a asp-page="/Admin/UserManagement" class="btn btn-outline-primary">
+                            <i class="bi bi-people"></i> Manage Users
+                        </a>
+                        <a asp-page="/Admin/Reports" class="btn btn-outline-secondary">
+                            <i class="bi bi-graph-up"></i> View Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,161 @@
+@page
+@model MentalWellnessSystem.Pages.Doctor.DashboardModel
+@{
+    ViewData["Title"] = "Doctor Dashboard";
+}
+
+<div class="container-fluid py-4">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0">Welcome, Dr. @Model.CurrentUser?.FullName!</h1>
+            <p class="text-muted">Specialty: @(Model.CurrentUser?.Specialty ?? "General")</p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-3">
+        <div class="col-md-6 mb-2">
+            <form method="get" id="filterForm">
+                <label class="form-label">Filter by Time Period</label>
+                <select asp-for="Filter" class="form-select" onchange="document.getElementById('filterForm').submit()">
+                    <option value="Day">Day</option>
+                    <option value="Week">Week</option>
+                    <option value="Month">Month</option>
+                    <option value="Year">Year</option>
+                </select>
+            </form>
+        </div>
+        <div class="col-md-6 mb-2">
+            <form method="get" id="statusFilterForm">
+                <input type="hidden" asp-for="Filter" />
+                <label class="form-label">Filter & Update Appointment Status</label>
+                <select asp-for="StatusFilter" class="form-select" onchange="document.getElementById('statusFilterForm').submit()">
+                    <option value="">All Statuses</option>
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- Appointments -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Appointments</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Appointments.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Patient</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var appointment in Model.Appointments)
+                                    {
+                                        <tr>
+                                            <td>@appointment.AppointmentDate.ToString("MMMM dd, yyyy")</td>
+                                            <td>@appointment.AppointmentTime.ToString("hh:mm tt")</td>
+                                            <td>@appointment.Patient.FullName</td>
+                                            <td>@(appointment.AppointmentType ?? "General Consultation")</td>
+                                            <td>
+                                                <form method="post" asp-page-handler="UpdateStatus" class="d-inline">
+                                                    <input type="hidden" name="appointmentId" value="@appointment.AppointmentId" />
+                                                    <select name="status" class="form-select form-select-sm d-inline-block" style="width: auto;" onchange="this.form.submit()">
+                                                        <option value="Scheduled" selected="@(appointment.Status == "Scheduled")">Scheduled</option>
+                                                        <option value="Ongoing" selected="@(appointment.Status == "Ongoing")">Ongoing</option>
+                                                        <option value="Completed" selected="@(appointment.Status == "Completed")">Completed</option>
+                                                        <option value="Cancelled" selected="@(appointment.Status == "Cancelled")">Cancelled</option>
+                                                    </select>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <a asp-page="/Doctor/ManageAppointment" asp-route-id="@appointment.AppointmentId" class="btn btn-sm btn-outline-primary">
+                                                    Manage
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-4">No appointments found for the selected period.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Feedback Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Patient Feedback</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.PatientFeedbacks.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Patient</th>
+                                        <th>Appointment Date</th>
+                                        <th>Rating</th>
+                                        <th>Comments</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var feedback in Model.PatientFeedbacks)
+                                    {
+                                        <tr>
+                                            <td>@feedback.SubmittedAt.ToString("MMM dd, yyyy")</td>
+                                            <td>@(feedback.IsAnonymous ? "Anonymous" : (feedback.Patient?.FullName ?? "Unknown"))</td>
+                                            <td>@(feedback.Appointment?.AppointmentDate.ToString("MMM dd, yyyy") ?? "N/A")</td>
+                                            <td>
+                                                @for (int i = 0; i < feedback.Rating; i++)
+                                                {
+                                                    <i class="bi bi-star-fill text-warning"></i>
+                                                }
+                                            </td>
+                                            <td>@(feedback.Comments ?? "No comments")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-4">No patient feedback yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

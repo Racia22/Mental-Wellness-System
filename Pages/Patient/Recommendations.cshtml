@@ -1,0 +1,105 @@
+@page
+@model MentalWellnessSystem.Pages.Patient.RecommendationsModel
+@{
+    ViewData["Title"] = "Recommended Resources";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="bi bi-lightbulb"></i> Recommended Resources</h2>
+            <p class="text-muted">Personalized resources and recommendations based on treatment plans from your doctor.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        @if (Model.Recommendations.Any())
+        {
+            @foreach (var rec in Model.Recommendations)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100 @(rec.IsViewed ? "" : "border-primary")">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">@rec.Title</h5>
+                            <span class="badge @(rec.Priority == "High" ? "bg-danger" : rec.Priority == "Medium" ? "bg-warning" : "bg-info")">
+                                @rec.Priority
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <span class="badge @(rec.IsViewed ? "bg-success" : "bg-warning")">
+                                    <i class="bi bi-@(rec.IsViewed ? "check-circle" : "clock")"></i> 
+                                    @if (rec.IsViewed)
+                                    {
+                                        <span>Status: Completed</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Status: Pending</span>
+                                    }
+                                </span>
+                                <span class="badge bg-primary ms-2">
+                                    <i class="bi bi-send"></i> Sent
+                                </span>
+                                <span class="badge bg-info ms-2">
+                                    <i class="bi bi-inbox"></i> Received
+                                </span>
+                                @if (rec.TreatmentPlan != null && rec.TreatmentPlan.Doctor != null)
+                                {
+                                    <span class="badge bg-secondary ms-2">
+                                        <i class="bi bi-person-badge"></i> From Dr. @rec.TreatmentPlan.Doctor.FullName
+                                    </span>
+                                }
+                            </div>
+                            <p class="text-muted">@rec.Description</p>
+                            <p class="small text-info"><i class="bi bi-info-circle"></i> @rec.RecommendationReason</p>
+                            @if (rec.TreatmentPlan != null && rec.TreatmentPlan.Doctor != null)
+                            {
+                                <p class="small text-primary">
+                                    <i class="bi bi-calendar"></i> Sent: @rec.CreatedAt.ToString("MMMM dd, yyyy 'at' hh:mm tt") | 
+                                    <i class="bi bi-inbox"></i> Received: @rec.CreatedAt.ToString("MMMM dd, yyyy 'at' hh:mm tt")
+                                </p>
+                            }
+                            <p class="small text-muted">
+                                <strong>Type:</strong> @rec.ResourceType | 
+                                <strong>Priority:</strong> @rec.Priority
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            @if (!string.IsNullOrEmpty(rec.ResourceUrl))
+                            {
+                                <a href="@rec.ResourceUrl" class="btn btn-sm btn-primary" target="_blank">
+                                    <i class="bi bi-box-arrow-up-right"></i> View Resource
+                                </a>
+                            }
+                            @if (!rec.IsViewed)
+                            {
+                                <form method="post" asp-page-handler="MarkViewed" class="d-inline">
+                                    <input type="hidden" name="recommendationId" value="@rec.RecommendationId" />
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="bi bi-check-circle"></i> Mark as Completed
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Completed
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> No recommendations available at this time. Keep tracking your mood to receive personalized recommendations!
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

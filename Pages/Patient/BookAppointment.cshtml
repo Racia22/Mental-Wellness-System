@@ -1,0 +1,82 @@
+@page
+@model MentalWellnessSystem.Pages.Patient.BookAppointmentModel
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Book New Appointment</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.DoctorId" class="form-label"></label>
+                            <select asp-for="Input.DoctorId" class="form-select" required>
+                                <option value="">-- Select Doctor --</option>
+                                @foreach (var doctor in Model.Doctors)
+                                {
+                                    <option value="@doctor.Value">@doctor.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Input.DoctorId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.AppointmentDate" class="form-label"></label>
+                            <input asp-for="Input.AppointmentDate" class="form-control" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                            <span asp-validation-for="Input.AppointmentDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.AppointmentTime" class="form-label"></label>
+                            <select asp-for="Input.AppointmentTime" class="form-select" required>
+                                <option value="">-- Select Time --</option>
+                                @foreach (var slot in Model.TimeSlots)
+                                {
+                                    <option value="@slot.Value">@slot.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Input.AppointmentTime" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.AppointmentType" class="form-label"></label>
+                            <select asp-for="Input.AppointmentType" class="form-select">
+                                <option value="">-- Select Type (Optional) --</option>
+                                <option value="Initial Consultation">Initial Consultation</option>
+                                <option value="Follow-up">Follow-up</option>
+                                <option value="Therapy Session">Therapy Session</option>
+                                <option value="Emergency">Emergency</option>
+                            </select>
+                            <span asp-validation-for="Input.AppointmentType" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-page="/Patient/Dashboard" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Book Appointment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

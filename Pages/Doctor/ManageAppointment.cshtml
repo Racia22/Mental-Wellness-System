@@ -1,0 +1,164 @@
+@page
+@model MentalWellnessSystem.Pages.Doctor.ManageAppointmentModel
+@{
+    ViewData["Title"] = "Manage Appointments";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Manage Appointments</h2>
+        </div>
+    </div>
+
+    <!-- Appointments List -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">All Appointments</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.AllAppointments.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Patient</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var appointment in Model.AllAppointments)
+                                    {
+                                        <tr class="@(Model.Appointment?.AppointmentId == appointment.AppointmentId ? "table-active" : "")">
+                                            <td>@appointment.AppointmentDate.ToString("MMMM dd, yyyy")</td>
+                                            <td>@appointment.AppointmentTime.ToString("hh:mm tt")</td>
+                                            <td>@appointment.Patient.FullName</td>
+                                            <td>@(appointment.AppointmentType ?? "General Consultation")</td>
+                                            <td>
+                                                <span class="badge bg-@(appointment.Status == "Scheduled" ? "primary" : appointment.Status == "Ongoing" ? "warning" : appointment.Status == "Completed" ? "success" : "danger")">
+                                                    @appointment.Status
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a asp-page="/Doctor/ManageAppointment" asp-route-id="@appointment.AppointmentId" class="btn btn-sm btn-primary">
+                                                    Manage
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No appointments found.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Appointment == null)
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    Please select an appointment from the list above to manage it.
+                </div>
+            </div>
+        </div>
+        return;
+    }
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3>Manage Appointment #@Model.Appointment.AppointmentId</h3>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <dl class="row mb-4">
+                        <dt class="col-sm-4">Patient</dt>
+                        <dd class="col-sm-8">@Model.Appointment.Patient.FullName</dd>
+
+                        <dt class="col-sm-4">Date</dt>
+                        <dd class="col-sm-8">@Model.Appointment.AppointmentDate.ToString("MMMM dd, yyyy")</dd>
+
+                        <dt class="col-sm-4">Time</dt>
+                        <dd class="col-sm-8">@Model.Appointment.AppointmentTime.ToString("hh:mm tt")</dd>
+
+                        <dt class="col-sm-4">Type</dt>
+                        <dd class="col-sm-8">@(Model.Appointment.AppointmentType ?? "General Consultation")</dd>
+                    </dl>
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="Status" class="form-label">Status</label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="Scheduled">Scheduled</option>
+                                <option value="Ongoing">Ongoing</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Notes" class="form-label">Notes</label>
+                            <textarea asp-for="Notes" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+
+                        <input type="hidden" name="id" value="@Model.Appointment.AppointmentId" />
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-page="/Doctor/ManageAppointment" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update Appointment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-page="/Doctor/PatientRecords" asp-route-patientId="@Model.Appointment.PatientId" class="btn btn-outline-primary">
+                            View Patient Records
+                        </a>
+                        <a asp-page="/Doctor/AddPatientRecord" asp-route-appointmentId="@Model.Appointment.AppointmentId" class="btn btn-outline-primary">
+                            Add Patient Record
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

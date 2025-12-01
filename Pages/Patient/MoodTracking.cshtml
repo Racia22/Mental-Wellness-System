@@ -1,0 +1,160 @@
+@page
+@model MentalWellnessSystem.Pages.Patient.MoodTrackingModel
+@{
+    ViewData["Title"] = "Mood Tracking";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="bi bi-heart-pulse"></i> Mood & Wellness Tracking</h2>
+            <p class="text-muted">Track your daily mood, stress levels, sleep, and energy to gain insights into your mental wellness journey.</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Log Entry Form -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Log Your Mood Today</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.LogDate" class="form-label">Date</label>
+                            <input asp-for="Input.LogDate" class="form-control" type="date" max="@DateOnly.FromDateTime(DateTime.UtcNow).ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="Input.LogDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.MoodScore" class="form-label">Mood Score (1-10) <span class="text-danger">*</span></label>
+                            <input asp-for="Input.MoodScore" class="form-control" type="number" min="1" max="10" required />
+                            <small class="text-muted">1 = Very Low, 10 = Excellent</small>
+                            <span asp-validation-for="Input.MoodScore" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.StressLevel" class="form-label">Stress Level (1-10)</label>
+                            <input asp-for="Input.StressLevel" class="form-control" type="number" min="1" max="10" />
+                            <small class="text-muted">1 = No Stress, 10 = Very High Stress</small>
+                            <span asp-validation-for="Input.StressLevel" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.SleepHours" class="form-label">Sleep Hours</label>
+                            <input asp-for="Input.SleepHours" class="form-control" type="number" step="0.5" min="0" max="24" />
+                            <span asp-validation-for="Input.SleepHours" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.EnergyLevel" class="form-label">Energy Level (1-10)</label>
+                            <input asp-for="Input.EnergyLevel" class="form-control" type="number" min="1" max="10" />
+                            <small class="text-muted">1 = Very Low, 10 = Very High</small>
+                            <span asp-validation-for="Input.EnergyLevel" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Notes" class="form-label">Notes</label>
+                            <textarea asp-for="Input.Notes" class="form-control" rows="3" maxlength="1000"></textarea>
+                            <span asp-validation-for="Input.Notes" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-save"></i> Save Log Entry
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Logs & Recommendations -->
+        <div class="col-lg-7">
+            <!-- Recent Logs -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Logs</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentLogs.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Mood</th>
+                                        <th>Stress</th>
+                                        <th>Sleep</th>
+                                        <th>Energy</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var log in Model.RecentLogs)
+                                    {
+                                        <tr>
+                                            <td>@log.LogDate.ToString("MMM dd, yyyy")</td>
+                                            <td>
+                                                <span class="badge @(log.MoodScore >= 7 ? "bg-success" : log.MoodScore >= 4 ? "bg-warning" : "bg-danger")">
+                                                    @log.MoodScore/10
+                                                </span>
+                                            </td>
+                                            <td>@(log.StressLevel?.ToString() ?? "-")</td>
+                                            <td>@(log.SleepHours?.ToString("F1") ?? "-") hrs</td>
+                                            <td>@(log.EnergyLevel?.ToString() ?? "-")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center">No mood logs yet. Start tracking your mood today!</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            @if (Model.Recommendations.Any())
+            {
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Recommended Resources</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var rec in Model.Recommendations.Take(3))
+                        {
+                            <div class="mb-3 p-3 border rounded">
+                                <h6>@rec.Title</h6>
+                                <p class="text-muted small mb-2">@rec.Description</p>
+                                <small class="text-info">@rec.RecommendationReason</small>
+                                @if (!string.IsNullOrEmpty(rec.ResourceUrl))
+                                {
+                                    <div class="mt-2">
+                                        <a href="@rec.ResourceUrl" class="btn btn-sm btn-outline-primary">View Resource</a>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

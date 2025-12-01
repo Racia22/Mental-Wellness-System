@@ -1,0 +1,201 @@
+@page
+@model MentalWellnessSystem.Pages.Admin.ReportsModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>System Reports</h2>
+        </div>
+    </div>
+
+    <!-- Period Filter -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <form method="get">
+                <div class="input-group">
+                    <select asp-for="Period" class="form-select" onchange="this.form.submit()">
+                        <option value="Today">Today</option>
+                        <option value="ThisMonth">This Month</option>
+                        <option value="LastDay">Last Day</option>
+                        <option value="LastWeek">Last Week</option>
+                        <option value="LastMonth">Last Month</option>
+                        <option value="LastYear">Last Year</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <form method="post" asp-page-handler="DownloadPdf">
+                <input type="hidden" asp-for="Period" />
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-download"></i> Download Report
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">Total Appointments</h5>
+                    <h2 class="mb-0">@Model.TotalAppointments</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">Completed</h5>
+                    <h2 class="mb-0">@Model.CompletedAppointments</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">Cancelled</h5>
+                    <h2 class="mb-0">@Model.CancelledAppointments</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted mb-2">No-Show Rate</h5>
+                    <h2 class="mb-0">@Model.NoShowRate.ToString("F1")%</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Appointments -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Recent Appointments</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var appointment in Model.RecentAppointments)
+                                {
+                                    <tr>
+                                        <td>@appointment.AppointmentDate.ToString("MMMM dd, yyyy")</td>
+                                        <td>@appointment.Patient.FullName</td>
+                                        <td>@appointment.Doctor.FullName</td>
+                                        <td>
+                                            <span class="badge bg-@(appointment.Status == "Scheduled" ? "primary" : appointment.Status == "Completed" ? "success" : "danger")">
+                                                @appointment.Status
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audit Logs -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Recent Activity Log</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Filters -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <form method="get">
+                                <input type="hidden" asp-for="Period" />
+                                <label class="form-label">Filter by Therapy Specialization</label>
+                                <div class="input-group">
+                                    <select asp-for="SpecializationFilter" class="form-select" onchange="this.form.submit()">
+                                        <option value="">All Specializations</option>
+                                        <option value="Individual Therapist">Individual Therapist</option>
+                                        <option value="Couples Therapist">Couples Therapist</option>
+                                        <option value="Teenage Therapist">Teenage Therapist</option>
+                                    </select>
+                                    @if (!string.IsNullOrEmpty(Model.SpecializationFilter))
+                                    {
+                                        <a asp-page="/Admin/Reports" asp-route-period="@Model.Period" class="btn btn-outline-secondary">
+                                            Clear
+                                        </a>
+                                    }
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <form method="get">
+                                <input type="hidden" asp-for="SpecializationFilter" />
+                                <label class="form-label">Filter by Time Period</label>
+                                <select asp-for="Period" class="form-select" onchange="this.form.submit()">
+                                    <option value="Today">Today</option>
+                                    <option value="ThisMonth">This Month</option>
+                                    <option value="LastDay">Last Day</option>
+                                    <option value="LastWeek">Last Week</option>
+                                    <option value="LastMonth">Last Month</option>
+                                    <option value="LastYear">Last Year</option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>Entity</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.RecentAuditLogs.Any())
+                                {
+                                    @foreach (var log in Model.RecentAuditLogs)
+                                    {
+                                        <tr>
+                                            <td>@log.Timestamp.ToString("MMM dd, yyyy HH:mm")</td>
+                                            <td>@(log.User?.FullName ?? "Unknown")</td>
+                                            <td>@log.Action</td>
+                                            <td>@log.EntityType</td>
+                                            <td>@log.Description</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">No activity logs found matching your search criteria.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

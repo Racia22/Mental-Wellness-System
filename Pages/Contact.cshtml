@@ -1,0 +1,116 @@
+﻿@page
+@model MentalWellnessSystem.Pages.ContactModel
+@{
+    ViewData["Title"] = "Contact";
+}
+
+<section class="contact-hero text-center text-white">
+    <div class="container py-5">
+        <h1 class="display-5 fw-bold mb-3">Contact MentalWellness</h1>
+        <p class="lead mb-0">
+            We're here to help and answer your questions
+        </p>
+    </div>
+</section>
+
+<section class="contact-section py-5">
+    <div class="container">
+        <div class="row g-4 align-items-start">
+            <!-- Left: Get in touch info -->
+            <div class="col-lg-5">
+                <h3 class="fw-bold mb-4">Get in Touch</h3>
+
+                <div class="mb-4 d-flex">
+                    <div class="contact-icon me-3">
+                        📍
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Our Office</h6>
+                        <p class="mb-0 text-muted">
+                            KN 123 St<br />
+                            Kigali City, Rwanda
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-4 d-flex">
+                    <div class="contact-icon me-3">
+                        📞
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Phone</h6>
+                        <p class="mb-0 text-muted">
+                            +250 788 888 888
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-4 d-flex">
+                    <div class="contact-icon me-3">
+                        ✉️
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Email</h6>
+                        <p class="mb-0 text-muted">
+                            support@mentalwellness.com
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-4 d-flex">
+                    <div class="contact-icon me-3">
+                        ⏰
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Hours</h6>
+                        <p class="mb-0 text-muted">
+                            Monday - Friday: 9am - 7pm<br />
+                            Saturday: 10am - 4pm<br />
+                            Sunday: Closed
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Form card -->
+            <div class="col-lg-7">
+                <div class="card contact-card border-0 shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="fw-bold mb-4">Send Us a Message</h3>
+
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input class="form-control form-control-lg" placeholder="Enter your name" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control form-control-lg" placeholder="you@example.com" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Subject</label>
+                                <select class="form-select form-select-lg">
+                                    <option selected>Select a subject</option>
+                                    <option>Booking a session</option>
+                                    <option>Pricing and payment</option>
+                                    <option>General question</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Message</label>
+                                <textarea class="form-control" rows="4" placeholder="How can we help?"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg px-4">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

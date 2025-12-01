@@ -1,0 +1,80 @@
+@page
+@model MentalWellnessSystem.Pages.Admin.ApproveDoctorsModel
+@{
+    ViewData["Title"] = "Approve Doctors";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Approve Doctors</h2>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    @if (Model.PendingDoctors.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Specialty</th>
+                                        <th>Phone</th>
+                                        <th>Registered</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var doctor in Model.PendingDoctors)
+                                    {
+                                        <tr>
+                                            <td>@doctor.FullName</td>
+                                            <td>@doctor.Email</td>
+                                            <td>@(doctor.Specialty ?? "Not specified")</td>
+                                            <td>@(doctor.Phone ?? "Not provided")</td>
+                                            <td>@doctor.CreatedAt.ToString("MMMM dd, yyyy")</td>
+                                            <td>
+                                                <form method="post" asp-page-handler="Approve" asp-route-userId="@doctor.Id" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                                </form>
+                                                <form method="post" asp-page-handler="Reject" asp-route-userId="@doctor.Id" class="d-inline" onsubmit="return confirm('Are you sure you want to reject this doctor?');">
+                                                    <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-4">No pending doctor approvals.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

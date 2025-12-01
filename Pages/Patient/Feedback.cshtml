@@ -1,0 +1,134 @@
+@page
+@model MentalWellnessSystem.Pages.Patient.FeedbackModel
+@{
+    ViewData["Title"] = "Feedback & Ratings";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="bi bi-star"></i> Feedback & Ratings</h2>
+            <p class="text-muted">Share your experience and help us improve our services.</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Submit Feedback Form -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-chat-left-text"></i> Submit Feedback</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.AppointmentId" class="form-label">Select Doctor & Appointment <span class="text-danger">*</span></label>
+                            <select asp-for="Input.AppointmentId" asp-items="Model.CompletedAppointments" class="form-select" required>
+                                <option value="">-- Select Doctor & Appointment --</option>
+                            </select>
+                            <small class="text-muted">Appointments show as "Dr. [Doctor Name] - [Date]"</small>
+                            <span asp-validation-for="Input.AppointmentId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Rating" class="form-label">Rating <span class="text-danger">*</span></label>
+                            <div>
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" asp-for="Input.Rating" value="@i" id="rating@i" required />
+                                        <label class="form-check-label" for="rating@i">
+                                            @for (int j = 0; j < i; j++)
+                                            {
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                            }
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="Input.Rating" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Comments" class="form-label">Comments</label>
+                            <textarea asp-for="Input.Comments" class="form-control" rows="4" maxlength="1000"></textarea>
+                            <span asp-validation-for="Input.Comments" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input asp-for="Input.IsAnonymous" class="form-check-input" type="checkbox" />
+                            <label asp-for="Input.IsAnonymous" class="form-check-label">
+                                Submit anonymously
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-send"></i> Submit Review
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Feedbacks -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-list-ul"></i> My Feedback History</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.MyFeedbacks.Any())
+                    {
+                        @foreach (var feedback in Model.MyFeedbacks)
+                        {
+                            <div class="mb-3 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <strong>@feedback.Doctor.FullName</strong>
+                                        <p class="text-muted small mb-0">@feedback.Appointment.AppointmentDate.ToString("MMM dd, yyyy")</p>
+                                    </div>
+                                    <div>
+                                        @for (int i = 0; i < feedback.Rating; i++)
+                                        {
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        }
+                                    </div>
+                                </div>
+                                @if (!string.IsNullOrEmpty(feedback.Comments))
+                                {
+                                    <p class="mb-0">@feedback.Comments</p>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center">No feedback submitted yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function updateAppointments(doctorId) {
+            // This function would ideally filter appointments by doctor
+            // For now, we'll use appointment-based selection which already includes doctor info
+            // The appointment dropdown already shows doctor name, so both work together
+        }
+    </script>
+}
+

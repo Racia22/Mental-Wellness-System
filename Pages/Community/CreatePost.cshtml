@@ -1,0 +1,62 @@
+@page
+@model MentalWellnessSystem.Pages.Community.CreatePostModel
+@{
+    ViewData["Title"] = "Create Post";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Create New Post</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Title" class="form-label">Title <span class="text-danger">*</span></label>
+                            <input asp-for="Input.Title" class="form-control" required maxlength="200" />
+                            <span asp-validation-for="Input.Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Category" class="form-label">Category</label>
+                            <select asp-for="Input.Category" class="form-select">
+                                <option value="General">General</option>
+                                <option value="Support">Support</option>
+                                <option value="Questions">Questions</option>
+                                <option value="Success Stories">Success Stories</option>
+                            </select>
+                            <span asp-validation-for="Input.Category" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Content" class="form-label">Content <span class="text-danger">*</span></label>
+                            <textarea asp-for="Input.Content" class="form-control" rows="8" required></textarea>
+                            <span asp-validation-for="Input.Content" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input asp-for="Input.IsAnonymous" class="form-check-input" type="checkbox" />
+                            <label asp-for="Input.IsAnonymous" class="form-check-label">
+                                Post anonymously
+                            </label>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-page="/Community/Index" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Create Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

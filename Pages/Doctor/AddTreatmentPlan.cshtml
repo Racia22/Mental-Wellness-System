@@ -1,0 +1,85 @@
+@page
+@model MentalWellnessSystem.Pages.Doctor.AddTreatmentPlanModel
+@{
+    ViewData["Title"] = "Create Treatment Plan";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Create Treatment Plan</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.PatientId" class="form-label">Patient <span class="text-danger">*</span></label>
+                            <select asp-for="Input.PatientId" asp-items="Model.Patients" class="form-select" required>
+                                <option value="">-- Select Patient --</option>
+                            </select>
+                            <span asp-validation-for="Input.PatientId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Title" class="form-label">Title <span class="text-danger">*</span></label>
+                            <input asp-for="Input.Title" class="form-control" required maxlength="200" />
+                            <span asp-validation-for="Input.Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Description" class="form-label">Description</label>
+                            <textarea asp-for="Input.Description" class="form-control" rows="4" maxlength="2000"></textarea>
+                            <span asp-validation-for="Input.Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Goals" class="form-label">Treatment Goals</label>
+                            <textarea asp-for="Input.Goals" class="form-control" rows="3" maxlength="1000"></textarea>
+                            <span asp-validation-for="Input.Goals" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Tasks" class="form-label">Tasks/Exercises</label>
+                            <textarea asp-for="Input.Tasks" class="form-control" rows="4" maxlength="2000"></textarea>
+                            <span asp-validation-for="Input.Tasks" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Input.StartDate" class="form-label">Start Date <span class="text-danger">*</span></label>
+                                <input asp-for="Input.StartDate" class="form-control" type="date" required />
+                                <span asp-validation-for="Input.StartDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Input.EndDate" class="form-label">End Date (Optional)</label>
+                                <input asp-for="Input.EndDate" class="form-control" type="date" />
+                                <span asp-validation-for="Input.EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.AppointmentId" class="form-label">Related Appointment (Optional)</label>
+                            <select asp-for="Input.AppointmentId" asp-items="Model.Appointments" class="form-select">
+                                <option value="">-- None --</option>
+                            </select>
+                            <span asp-validation-for="Input.AppointmentId" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-page="/Doctor/TreatmentPlans" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Create Treatment Plan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

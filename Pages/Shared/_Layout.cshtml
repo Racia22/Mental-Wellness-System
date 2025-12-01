@@ -1,0 +1,190 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using MentalWellnessSystem.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MentalWellness</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MentalWellnessSystem.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body class="d-flex flex-column min-vh-100 @(SignInManager.IsSignedIn(User) ? "has-sidebar" : "")">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var roles = await UserManager.GetRolesAsync(user!);
+        var userRole = roles.FirstOrDefault();
+
+        <div class="wrapper d-flex">
+            <!-- Left Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <a class="sidebar-brand" asp-area="" asp-page="/Index">
+                        <span class="fw-bold">Mental</span><span class="fw-bold" style="color: #764ba2;">Wellness</span>
+                    </a>
+                </div>
+                <nav class="sidebar-nav">
+                    <ul class="nav-list">
+                        @if (userRole == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Admin/Dashboard" ? "active" : "")" asp-page="/Admin/Dashboard">
+                                    <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Admin/ApproveDoctors" ? "active" : "")" asp-page="/Admin/ApproveDoctors">
+                                    <i class="bi bi-person-check"></i> <span>Approved Doctors</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Admin/UserManagement" ? "active" : "")" asp-page="/Admin/UserManagement">
+                                    <i class="bi bi-people"></i> <span>User Management</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Admin/Reports" ? "active" : "")" asp-page="/Admin/Reports">
+                                    <i class="bi bi-graph-up"></i> <span>Reports</span>
+                                </a>
+                            </li>
+                        }
+                        else if (userRole == "Doctor" && user!.IsApproved)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Doctor/Dashboard" ? "active" : "")" asp-page="/Doctor/Dashboard">
+                                    <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Doctor/PatientRecords" ? "active" : "")" asp-page="/Doctor/PatientRecords">
+                                    <i class="bi bi-file-earmark-medical"></i> <span>Patient Records</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Doctor/TreatmentPlans" ? "active" : "")" asp-page="/Doctor/TreatmentPlans">
+                                    <i class="bi bi-clipboard-check"></i> <span>Treatment Plan</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Doctor/ManageAppointment" ? "active" : "")" asp-page="/Doctor/ManageAppointment">
+                                    <i class="bi bi-calendar-check"></i> <span>Manage Appointments</span>
+                                </a>
+                            </li>
+                        }
+                        else if (userRole == "Patient")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Patient/Dashboard" ? "active" : "")" asp-page="/Patient/Dashboard">
+                                    <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Patient/BookAppointment" ? "active" : "")" asp-page="/Patient/BookAppointment">
+                                    <i class="bi bi-calendar-plus"></i> <span>Book Appointment</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Patient/AppointmentHistory" ? "active" : "")" asp-page="/Patient/AppointmentHistory">
+                                    <i class="bi bi-clock-history"></i> <span>Appointment History</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Patient/TreatmentPlans" ? "active" : "")" asp-page="/Patient/TreatmentPlans">
+                                    <i class="bi bi-clipboard-check"></i> <span>Treatment Plan</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="main-content flex-grow-1">
+                <!-- Top Header Bar -->
+                <header class="top-header">
+                    <div class="top-header-content">
+                        <div class="d-flex align-items-center">
+                            <button class="sidebar-toggle d-lg-none me-3" type="button">
+                                <i class="bi bi-list"></i>
+                            </button>
+                        </div>
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-circle"></i> @user!.FullName
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        @{
+                                            var rolesDropdown = await UserManager.GetRolesAsync(user);
+                                            var userRoleDropdown = rolesDropdown.FirstOrDefault();
+                                        }
+                                        @if (userRoleDropdown == "Patient")
+                                        {
+                                            <li><a class="dropdown-item" asp-page="/Patient/Profile"><i class="bi bi-person"></i> Profile</a></li>
+                                        }
+                                        else if (userRoleDropdown == "Doctor")
+                                        {
+                                            <li><a class="dropdown-item" asp-page="/Doctor/Profile"><i class="bi bi-person"></i> Profile</a></li>
+                                        }
+                                        else if (userRoleDropdown == "Admin")
+                                        {
+                                            <li><a class="dropdown-item" asp-page="/Admin/Profile"><i class="bi bi-person"></i> Profile</a></li>
+                                        }
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                                                <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Logout</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </header>
+
+                <!-- Page Content -->
+                <main role="main" class="content-area">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Public pages without sidebar -->
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-page="/Index">
+                        <span class="fw-bold">Mental</span><span class="fw-bold" style="color: #764ba2; font-size: 1.65rem;">Wellness</span>
+                    </a>
+                    <div class="navbar-nav ms-auto">
+                        <a class="nav-link" asp-area="" asp-page="/Contact">Contact</a>
+                        <a class="nav-link" asp-page="/Community/Index">Community</a>
+                        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                        <a class="btn btn-primary ms-lg-2 mt-2 mt-lg-0" asp-area="Identity" asp-page="/Account/Register">Get Started</a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <main role="main" class="flex-grow-1">
+            @RenderBody()
+        </main>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

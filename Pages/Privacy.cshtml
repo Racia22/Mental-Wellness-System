@@ -1,0 +1,51 @@
+﻿@page
+@model PrivacyModel
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <h1 class="mb-4">Privacy Policy</h1>
+                    
+                    <p class="text-muted mb-4">Last updated: @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+
+                    <h3 class="mt-4 mb-3">1. Information We Collect</h3>
+                    <p>We collect information that you provide directly to us, including:</p>
+                    <ul>
+                        <li>Personal identification information (name, email, phone number)</li>
+                        <li>Medical information related to your appointments</li>
+                        <li>Account credentials and authentication data</li>
+                    </ul>
+
+                    <h3 class="mt-4 mb-3">2. How We Use Your Information</h3>
+                    <p>We use the information we collect to:</p>
+                    <ul>
+                        <li>Provide and maintain our services</li>
+                        <li>Schedule and manage appointments</li>
+                        <li>Send appointment reminders and notifications</li>
+                        <li>Maintain medical records as required by law</li>
+                    </ul>
+
+                    <h3 class="mt-4 mb-3">3. Data Security</h3>
+                    <p>We implement industry-standard security measures to protect your personal information, including encryption, secure authentication, and regular security audits.</p>
+
+                    <h3 class="mt-4 mb-3">4. Your Rights</h3>
+                    <p>You have the right to:</p>
+                    <ul>
+                        <li>Access your personal information</li>
+                        <li>Request corrections to your data</li>
+                        <li>Request deletion of your account (subject to legal requirements)</li>
+                        <li>Opt-out of non-essential communications</li>
+                    </ul>
+
+                    <h3 class="mt-4 mb-3">5. Contact Us</h3>
+                    <p>If you have questions about this Privacy Policy, please contact us at <a href="mailto:privacy@mentalwellness.com">privacy@mentalwellness.com</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

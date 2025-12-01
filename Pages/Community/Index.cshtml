@@ -1,0 +1,87 @@
+@page
+@model MentalWellnessSystem.Pages.Community.IndexModel
+@{
+    ViewData["Title"] = "Community Support";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="bi bi-people"></i> Community Support</h2>
+            <p class="text-muted">Connect with others, share experiences, and find support in our community.</p>
+            <a asp-page="/Community/CreatePost" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New Post
+            </a>
+        </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <a asp-page="/Community/Index" class="btn @(string.IsNullOrEmpty(Model.SelectedCategory) ? "btn-primary" : "btn-outline-primary")">
+                    All
+                </a>
+                <a asp-page="/Community/Index" asp-route-category="General" class="btn @(Model.SelectedCategory == "General" ? "btn-primary" : "btn-outline-primary")">
+                    General
+                </a>
+                <a asp-page="/Community/Index" asp-route-category="Support" class="btn @(Model.SelectedCategory == "Support" ? "btn-primary" : "btn-outline-primary")">
+                    Support
+                </a>
+                <a asp-page="/Community/Index" asp-route-category="Questions" class="btn @(Model.SelectedCategory == "Questions" ? "btn-primary" : "btn-outline-primary")">
+                    Questions
+                </a>
+                <a asp-page="/Community/Index" asp-route-category="Success Stories" class="btn @(Model.SelectedCategory == "Success Stories" ? "btn-primary" : "btn-outline-primary")">
+                    Success Stories
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts -->
+    <div class="row">
+        @if (Model.Posts.Any())
+        {
+            @foreach (var post in Model.Posts)
+            {
+                <div class="col-12 mb-4">
+                    <div class="card shadow-sm @(post.IsPinned ? "border-warning" : "")">
+                        @if (post.IsPinned)
+                        {
+                            <div class="card-header bg-warning">
+                                <i class="bi bi-pin-angle-fill"></i> Pinned
+                            </div>
+                        }
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="mb-1">@post.Title</h5>
+                                    <p class="text-muted small mb-0">
+                                        By @(post.IsAnonymous ? "Anonymous" : post.User.FullName) | 
+                                        @post.CreatedAt.ToString("MMM dd, yyyy HH:mm") | 
+                                        <span class="badge bg-secondary">@post.Category</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <p class="mb-2">@post.Content</p>
+                            <div class="d-flex gap-2">
+                                <a asp-page="/Community/ViewPost" asp-route-id="@post.PostId" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-chat"></i> Comments (@post.CommentsCount)
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> No posts found. Be the first to share!
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
