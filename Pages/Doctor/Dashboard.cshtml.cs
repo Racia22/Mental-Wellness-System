@@ -7,9 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MentalWellnessSystem.Pages.Doctor
 {
-    /// <summary>
-    /// Doctor Dashboard - shows appointments filtered by time period
-    /// </summary>
+    
     [Authorize(Policy = "RequireDoctorRole")]
     public class DashboardModel : PageModel
     {
