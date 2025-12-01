@@ -1,26 +1,36 @@
 @page
 @model MentalWellnessSystem.Pages.Admin.DashboardModel
 @{
+    // Set page title for the browser and layout
     ViewData["Title"] = "Admin Dashboard";
 }
 
 <div class="container-fluid py-4">
+    <!-- Page Title Row -->
     <div class="row mb-4">
         <div class="col-12">
+            <!-- Main heading for the Admin Dashboard -->
             <h1 class="h3 mb-0">Admin Dashboard</h1>
         </div>
     </div>
 
-    <!-- Statistics Cards -->
+    <!-- =======================
+         Statistics Cards Section
+         Shows system summary counts
+    ======================== -->
     <div class="row mb-4">
+        <!-- Total Users -->
         <div class="col-md-3 mb-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title text-muted mb-2">Total Users</h5>
+                    <!-- Display total users from model -->
                     <h2 class="mb-0">@Model.Stats.TotalUsers</h2>
                 </div>
             </div>
         </div>
+
+        <!-- Patients Count -->
         <div class="col-md-3 mb-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
@@ -29,6 +39,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Doctors Count -->
         <div class="col-md-3 mb-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
@@ -37,17 +49,26 @@
                 </div>
             </div>
         </div>
+
+        <!-- Pending Approval Doctors -->
         <div class="col-md-3 mb-3">
+            <!-- Highlighted with border-warning -->
             <div class="card border-0 shadow-sm border-warning">
                 <div class="card-body">
                     <h5 class="card-title text-muted mb-2">Pending Approvals</h5>
+                    <!-- Highlight pending doctors -->
                     <h2 class="mb-0 text-warning">@Model.Stats.PendingDoctorApprovals</h2>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- =======================
+         Appointment Statistics
+    ======================== -->
     <div class="row mb-4">
+
+        <!-- Total Appointments -->
         <div class="col-md-3 mb-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
@@ -56,6 +77,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Upcoming Appointments -->
         <div class="col-md-3 mb-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
@@ -64,6 +87,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Completed Appointments -->
         <div class="col-md-3 mb-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
@@ -72,6 +97,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Active Treatment Plans -->
         <div class="col-md-3 mb-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
@@ -82,24 +109,38 @@
         </div>
     </div>
 
-    <!-- Quick Actions -->
+    <!-- =======================
+         Quick Actions Section
+         Shortcuts to admin pages
+    ======================== -->
     <div class="row">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
+                <!-- Header for quick actions -->
                 <div class="card-header bg-white">
                     <h5 class="mb-0">Quick Actions</h5>
                 </div>
+
                 <div class="card-body">
+                    <!-- Buttons arranged responsively -->
                     <div class="d-grid gap-2 d-md-flex">
+
+                        <!-- Redirect to approve pending doctors -->
                         <a asp-page="/Admin/ApproveDoctors" class="btn btn-primary">
-                            <i class="bi bi-person-check"></i> Approve Doctors (@Model.Stats.PendingDoctorApprovals pending)
+                            <i class="bi bi-person-check"></i>
+                            Approve Doctors (@Model.Stats.PendingDoctorApprovals pending)
                         </a>
+
+                        <!-- Redirect to user management page -->
                         <a asp-page="/Admin/UserManagement" class="btn btn-outline-primary">
                             <i class="bi bi-people"></i> Manage Users
                         </a>
+
+                        <!-- Redirect to reports page -->
                         <a asp-page="/Admin/Reports" class="btn btn-outline-secondary">
                             <i class="bi bi-graph-up"></i> View Reports
                         </a>
+
                     </div>
                 </div>
             </div>
